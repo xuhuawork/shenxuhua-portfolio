@@ -1,0 +1,44 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.pytest_cache/
+venv/
+.venv/
+
+# Build artifacts / Source materials (large)
+assets/projects/
+assets/thumbnails/
+*.pptx
+*.key
+*.pdf
+
+# Local server
+.cache/
+.tmp/
+
+# Logs
+*.log
+
+# Claude Code
+.claude/launch.json

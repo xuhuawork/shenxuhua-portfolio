@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHENXUHUA - Director Portfolio</title>
+<link rel="stylesheet" href="style.css">
+<!-- Lenis for smooth scroll -->
+<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- ThreeJS Import Map for Particles -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/examples/jsm/loaders/GLTFLoader": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js"
+  }
+}
+</script>
+
+</head>
+<body>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-counter" id="loaderCounter">000</div>
+  <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill"></div></div>
+  <div class="loader-text">SHENXUHUA DIRECTOR PORTFOLIO</div>
+</div>
+<!-- Film grain overlay -->
+<div class="film-grain"></div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- TOP BAR -->
+<div class="top-bar" id="topBar">
+  <div class="brand">SHENXUHUA DIRECTOR</div>
+  <div class="actions">
+    <span class="slide-counter" id="slideCounter">01 / 39</span>
+    <button onclick="toggleOverview()" title="Overview (O)"><i data-lucide="grid-3x3"></i> <span>Overview</span></button>
+    <button onclick="toggleFullscreen()" title="Fullscreen (F)"><i data-lucide="maximize"></i> <span>Fullscreen</span></button>
+    <button onclick="exportPDF()" title="Export PDF (P)"><i data-lucide="download"></i> <span>PDF</span></button>
+  </div>
+</div>
+
+<!-- OVERVIEW MODE (grid of all slides) -->
+<div class="overview" id="overview">
+  <div class="overview-header">
+    <div class="overview-title">SHENXUHUA · Works Overview</div>
+    <button class="overview-close" onclick="toggleOverview()">&times;</button>
+  </div>
+  <div class="overview-grid" id="overviewGrid"></div>
+</div>
+
+<!-- NAV DOTS -->
+<div class="nav-dots" id="navDots"></div>
+
+<!-- KEYBOARD HINTS -->
+<div class="keyboard-hint" id="keyHint">
+  <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> <span class="hint-label">Navigate</span></span>
+  <span><kbd>O</kbd> <span class="hint-label">Overview</span></span>
+  <span><kbd>F</kbd> <span class="hint-label">Fullscreen</span></span>
+  <span><kbd>P</kbd> <span class="hint-label">PDF</span></span>
+</div>
+
+<!-- SLIDES -->
+<!-- Slide 1: Cover (DOM Based) -->
+<section class="slide slide--code slide--cover" id="slide-1" data-section="cover" data-label="Cover">
+  <div class="slide-bg"></div>
+  <div class="cinematic-cover">
+    <div class="cover-top-nav">
+      <div class="nav-item">Workshop</div>
+      <div class="nav-item">Concept <i data-lucide="chevron-down" style="width:14px;height:14px;margin-left:4px;"></i></div>
+    </div>
+    <div class="cover-middle">
+      <div class="cover-year">2021</div>
+      <h1 class="cover-title">ShenXuhua<br>.com</h1>
+    </div>
+    <div class="cover-footer">
+      <div class="footer-copy">版权所有 &copy; Director SHENXUHUA</div>
+      <div class="footer-legal">Copyright &copy; All rights reserved. No part of the presentation may be reproduced or transmitted in any means, electronic or mechanical, including photocopying, recording, or any information storage and retrieval system without written permission from Shen Xuhua.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="arrow"></div>
+  </div>
+</section>
+
+<!-- Slide 2: Intro (DOM BasedTypewriter + Crew Background) -->
+<section class="slide slide--code" id="slide-2" data-section="intro" data-label="Intro">
+  <div class="slide-bg" style="opacity: 0.15; mix-blend-mode: luminosity;">
+    <img src="assets/slides/slide-03.jpg" alt="Crew View" style="width: 100%; height: 100%; object-fit: cover;">
+  </div>
+  <div class="cinematic-intro">
+    <h2 class="typewriter-text" id="typewriterText"></h2><span class="typewriter-cursor" id="typewriterCursor">|</span>
+  </div>
+</section>
+
+<!-- Slide 3: Director Bio (DOM Based Split Screen) -->
+<section class="slide slide--code" id="slide-3" data-section="bio" data-label="Director Bio">
+  <div class="slide-bg">
+    <img src="assets/slides/slide-04.jpg" alt="Bio Background" style="width: 100%; height: 100%; object-fit: cover; filter: blur(25px) brightness(0.15); transform: scale(1.2);">
+  </div>
+  
+  <div class="cinematic-bio">
+    <div class="bio-portrait">
+      <img src="assets/slides/portrait-cropped.jpg" alt="Shen Xuhua Profile">
+    </div>
+    <div class="bio-text">
+      <div class="bio-role">Director</div>
+      <h2 class="bio-name">
+        <span class="cn">沈序桦</span>
+        <span class="en">SHENXUHUA</span>
+      </h2>
+      <div class="bio-divider"></div>
+      <ul class="bio-titles">
+        <li>CSC 中国影视摄影家协会会员</li>
+        <li>学院派前沿<s style="opacity: 0.5; text-decoration-thickness: 2px;">视觉</s> 抽象导演 / 制片工业技术极客 (Videcoding)</li>
+        <li>常年自带 Drama Buff · 青年路全能老司机</li>
+        <li style="margin-top: 12px; color: rgba(255,255,255,0.9); font-weight: 500;">不善八股，只认奇思妙想。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 4: Extended Profile (Light Mode) -->
+<section class="slide slide--code" id="slide-5" data-section="about" data-label="About">
+  <div class="slide-bg" style="background-color: #f4f3ef;"></div>
+  
+  <div class="cinematic-about">
+    <div class="about-watermark">WORKSHOP</div>
+    
+    <div class="about-left">
+      <h1 class="about-title">SHENXUHUA<br>PROFILE</h1>
+    </div>
+    <div class="about-right">
+      <p class="about-zh">沈序桦，独立广告导演。作品视觉风格鲜明，具有极强的商业洞察力，善于运用创新视觉语汇连接品牌与年轻世代。拥有顶级的商业制作控盘能力，从前沿概念孵化到摄制执行进行全面把控。<br><br>合作品牌与超级IP涵盖：滴滴出行、快手、腾讯游戏 (DNF / 王者荣耀 / 三角洲行动)、华为、三星、百事可乐、科勒 KOHLER、海底捞、极狐汽车、兰蔻、中国人寿......<br><br>合作艺人包括：成龙、檀健次、徐良、大张伟、孟美岐、小沈阳、董浩、戴佩妮、李玖哲、胡夏、逃跑计划、南征北战NZBZ、符龙飞......</p>
+      
+      <p class="about-en">Shen Xuhua, independent advertising director. Known for a distinctive cinematic style and strong commercial insight, he excels at connecting brands with young generations through innovative visual language. With top-tier production capabilities, he oversees projects completely from core conceptualization to final execution.<br><br>Partner brands and IPs include: Didi Chuxing, Kuaishou, Tencent Games (DNF / Honor of Kings / Delta Force), Huawei, Samsung, Pepsi-Cola, Kohler, Haidilao, ARCFOX, Lancome, China Life...<br><br>Artists collaborated include: Jackie Chan, Tan Jianci, Xu Liang, Da Zhang Wei, Meng Meiqi, Xiao Shenyang, Dong Hao, Penny Tai, Nicky Lee, Hu Xia, Escape Plan, NZBZ, Fu Longfei...</p>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 5: Important Works (Grid Layout) -->
+<section class="slide slide--code" id="slide-6" data-section="works" data-label="Works List">
+  <div class="slide-bg" style="background-color: #1a1a1a;"></div>
+  
+  <!-- CSS Drawn Grid -->
+  <div class="works-grid-bg"></div>
+
+  <div class="cinematic-works">
+    <div class="works-header">
+      <h2 class="works-title">IMPORTANT WORKS</h2>
+      <div class="works-line"></div>
+    </div>
+    
+    <div class="works-list-container">
+      <ul class="works-col pl-col-1">
+        <li>滴滴出行 x 檀健次 官宣片</li>
+        <li>2023成都大运会宣传片《共舞》</li>
+        <li>快手 | 成龙大哥的真心话</li>
+        <li>三角洲行动 x 海底捞 新春大红篇</li>
+        <li>极狐T1 x 大张伟 人间清醒系列</li>
+        <li>终极角逐 | 2025Major 出征片</li>
+        <li>逆战:未来 x 大哥 | 大哥你好吗 MV</li>
+        <li>地下城与勇士 16周年《勇士之名》</li>
+        <li>DNF拾光音乐会 (戴佩妮/逃跑计划等)</li>
+        <li>中国人寿保险短剧《家庭保卫战》</li>
+        <li>Lancome x 孟美岐 120赤茶橙</li>
+        <li>统一绿茶 x 大张伟 2021 TVC</li>
+      </ul>
+      <ul class="works-col pl-col-2">
+        <li>小沈阳 | 2025巡回演唱会 VCR</li>
+        <li>酷盖乐世 SAMSUNG x 大张伟</li>
+        <li>JA符龙飞 《大胆》《蜘蛛》MV</li>
+        <li>DNF x SNK 格斗不朽 KO一切</li>
+        <li>Tencent x 敦煌研究院 H5</li>
+        <li>科勒 KOHLER x 吉克隽逸</li>
+        <li>喜力 x 星电音联盟 中插广告</li>
+        <li>极狐T1 主题曲《我伟大的人生》MV</li>
+        <li>Pepsi x 水果星球 | 百事可乐无糖</li>
+        <li>《食物语空桑奇妙餐馆》创意视频</li>
+        <li>绝地求生 x 美团外卖 H5</li>
+        <li>招联金融《信用杂货铺》H5</li>
+      </ul>
+    </div>
+</section>
+
+<!-- Slide 8: Transition GIF -->
+<section class="slide slide--gif" id="slide-8" data-section="transition" data-label="Transition">
+  <div class="slide-bg">
+    <img src="assets/gifs/transition.gif" alt="Transition animation">
+  </div>
+</section>
+
+<!-- DYNAMIC WORKS INJECTED HERE -->
+
+<style>
+@keyframes cinematic-breathe {
+  0% { transform: scale(1.0); }
+  100% { transform: scale(1.04); }
+}
+.cinematic-bg {
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  animation: cinematic-breathe 20s infinite alternate ease-in-out;
+  will-change: transform;
+}
+</style>
+
+
+<section class="slide project-showcase" id="slide-9" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.009.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-10" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.010.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-11" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.011.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-12" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.012.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-13" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.013.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-14" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.014.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-15" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.015.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-16" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.016.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-17" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.017.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-18" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.018.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-19" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.019.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-20" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.020.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-21" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.021.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-22" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.022.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-23" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.023.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-24" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.024.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-25" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.025.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-26" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.026.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-27" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.027.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-28" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.028.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-29" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.029.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-30" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.030.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-31" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.031.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-32" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.032.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-33" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.033.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-34" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.034.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-35" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.035.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-36" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.036.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-37" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.037.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-38" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.038.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-39" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.039.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-40" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.040.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-41" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.041.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-42" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.042.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-43" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.043.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-44" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.044.jpeg');"></div>
+  </div>
+</section>
+
+
+<section class="slide project-showcase" id="slide-45" data-section="project" style="padding:0; margin:0; width:100%; height:100vh; overflow:hidden; background-color: #050505; position: relative;">
+  <div class="slide-bg">
+    <div class="cinematic-bg" style="background-image: url('assets/full_slides/slides_export.045.jpeg');"></div>
+  </div>
+</section>
+
+<!-- Slide 39: Thank You with GIF -->
+<section class="slide slide--gif" id="slide-39" data-section="end" data-label="Thank You">
+  <div class="slide-bg">
+    <img src="assets/gifs/thankyou.gif" alt="Thank You animation">
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:8vh 6vw;z-index:2;">
+      <div style="font-size:clamp(24px,4vw,56px);font-weight:700;letter-spacing:2px;line-height:1.3;text-shadow:0 2px 20px rgba(0,0,0,0.5);">
+        WELCOME FOR COOPERATION<br>THANK YOU!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="close-btn">&times;</button>
+  <img id="lightboxImg" src="" alt="Enlarged view">
+</div>
+
+<script src="main_v12.js"></script>
+<script type="module" src="particles.js"></script>
+</body>
+</html>
