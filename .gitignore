@@ -29,6 +29,7 @@ venv/
 # Build artifacts / Source materials (large)
 assets/projects/
 assets/thumbnails/
+assets/xpc/videos
 *.pptx
 *.key
 *.pdf

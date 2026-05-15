@@ -34,9 +34,187 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   requestAnimationFrame(raf);
 
+  document.querySelectorAll('.slide-bg img[src]:not([data-src])').forEach(img => {
+    if (img.complete) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+      img.addEventListener('error', () => img.classList.add('loaded'), { once: true });
+    }
+  });
+
+  const projectWorks = Array.isArray(window.XPC_WORKS) ? window.XPC_WORKS : [];
+  const projectGrid = document.getElementById('projectGrid');
+  const libraryControls = document.getElementById('libraryControls');
+  const libraryStats = document.getElementById('libraryStats');
+  const projectSearch = document.getElementById('projectSearch');
+  let activeProjectFilter = 'FEATURED';
+  const featuredOrder = [
+    'a12909862', 'a12617782', 'a11617501', 'a13602494', 'a13489029', 'a13489031',
+    'a13489033', 'a13489035', 'a13541810', 'a13585807', 'a13158530', 'a13053665',
+    'a13260747', 'a13254971', 'a13592607', 'a11012663', 'a10380338', 'a11302201',
+    'a11294117', 'a10511239', 'a10547987', 'a13158734', 'a11792357', 'a12724215',
+    'a11108246', 'a10527675', 'a10293528'
+  ];
+  const featuredRank = new Map(featuredOrder.map((id, index) => [id, index]));
+  const categoryLabels = {
+    'FEATURED': '精选',
+    'TVC / BRAND': '广告 / 品牌',
+    'INTERACTIVE': '互动 / H5',
+    'MV / MUSIC': 'MV / 音乐',
+    'STORY': '短片 / 剧情',
+    'CAMPAIGN': '宣传 / Campaign'
+  };
+  const projectModal = document.createElement('div');
+  projectModal.className = 'project-modal';
+  projectModal.innerHTML = `
+    <div class="project-modal-panel" role="dialog" aria-modal="true" aria-label="Project player">
+      <button class="project-modal-close" type="button" aria-label="Close project"><i data-lucide="x"></i></button>
+      <video class="project-modal-video" controls playsinline preload="metadata"></video>
+      <div class="project-modal-meta">
+        <div class="project-modal-category"></div>
+        <h3 class="project-modal-title"></h3>
+        <div class="project-modal-detail"></div>
+        <a class="project-modal-link" target="_blank" rel="noreferrer">在新片场观看</a>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(projectModal);
+
+  function sortWorksForView(works, filter) {
+    const sorted = [...works];
+    if (filter === 'FEATURED') {
+      return sorted.sort((a, b) => (featuredRank.get(a.id) ?? 999) - (featuredRank.get(b.id) ?? 999));
+    }
+    return sorted.sort((a, b) => b.order - a.order);
+  }
+
+  function renderProjectLibrary(filter = activeProjectFilter) {
+    if (!projectGrid || !projectWorks.length) return;
+    activeProjectFilter = filter;
+    const query = projectSearch ? projectSearch.value.trim().toLowerCase() : '';
+
+    const categories = ['FEATURED', ...Array.from(new Set(projectWorks.map(work => work.category)))];
+    if (libraryControls && !libraryControls.dataset.ready) {
+      categories.forEach(category => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'library-filter';
+        button.dataset.filter = category;
+        button.textContent = categoryLabels[category] || category;
+        button.addEventListener('click', () => renderProjectLibrary(category));
+        libraryControls.appendChild(button);
+      });
+      libraryControls.dataset.ready = 'true';
+    }
+
+    document.querySelectorAll('.library-filter').forEach(button => {
+      button.classList.toggle('active', button.dataset.filter === filter);
+    });
+
+    const baseWorks = filter === 'FEATURED'
+      ? projectWorks.filter(work => work.featured)
+      : projectWorks.filter(work => work.category === filter);
+    const visibleWorks = sortWorksForView(baseWorks, filter).filter(work => {
+      if (!query) return true;
+      return [work.title, work.brand, work.category, work.id].join(' ').toLowerCase().includes(query);
+    });
+
+    if (libraryStats) {
+      libraryStats.textContent = `${visibleWorks.length} 项展示 · ${projectWorks.length} 项总库`;
+    }
+
+    projectGrid.innerHTML = '';
+    if (!visibleWorks.length) {
+      projectGrid.innerHTML = '<div class="library-empty">没有找到匹配项目，换个关键词试试。</div>';
+      return;
+    }
+
+    visibleWorks.forEach((work, index) => {
+      const card = document.createElement('article');
+      card.className = 'project-card';
+      if (index === 0 && filter === 'FEATURED' && !query) card.classList.add('project-card--hero');
+      card.innerHTML = `
+        <button class="project-media" type="button" aria-label="在新片场观看 ${work.title}">
+          <img src="${work.cover}" alt="${work.title}" loading="lazy">
+          <span class="project-play"><i data-lucide="external-link"></i></span>
+        </button>
+        <div class="project-card-body">
+          <div class="project-eyebrow">${categoryLabels[work.category] || work.category} · ${work.duration}</div>
+          <h3>${work.title}</h3>
+          <div class="project-meta-row">
+            <span>${work.brand}</span>
+            <span>${work.id}</span>
+          </div>
+        </div>
+      `;
+      card.querySelector('.project-media').addEventListener('click', () => openProject(work));
+      projectGrid.appendChild(card);
+    });
+
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function openProject(work) {
+    if (work.xpcUrl) {
+      window.open(work.xpcUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    const video = projectModal.querySelector('.project-modal-video');
+    video.src = work.videoFile;
+    video.poster = work.cover;
+    projectModal.querySelector('.project-modal-category').textContent = `${categoryLabels[work.category] || work.category} · ${work.duration} · ${work.sizeMB}MB`;
+    projectModal.querySelector('.project-modal-title').textContent = work.title;
+    projectModal.querySelector('.project-modal-detail').textContent = work.videoPath;
+    projectModal.querySelector('.project-modal-link').href = work.xpcUrl || work.videoFile;
+    projectModal.classList.add('active');
+    lenis.stop();
+    video.load();
+  }
+
+  function closeProject() {
+    const video = projectModal.querySelector('.project-modal-video');
+    video.pause();
+    video.removeAttribute('src');
+    projectModal.classList.remove('active');
+    lenis.start();
+  }
+
+  projectModal.querySelector('.project-modal-close').addEventListener('click', closeProject);
+  projectModal.addEventListener('click', (event) => {
+    if (event.target === projectModal) closeProject();
+  });
+  if (projectSearch) {
+    projectSearch.addEventListener('input', () => renderProjectLibrary(activeProjectFilter));
+  }
+  document.querySelectorAll('.works-col li[data-xpc-id]').forEach(item => {
+    item.setAttribute('tabindex', '0');
+    item.setAttribute('role', 'link');
+    item.setAttribute('title', '在新片场观看');
+    const openWork = () => {
+      window.open(`https://www.xinpianchang.com/${item.dataset.xpcId}`, '_blank', 'noopener,noreferrer');
+    };
+    item.addEventListener('click', openWork);
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openWork();
+      }
+    });
+  });
+  renderProjectLibrary();
+
   // 3. Slides & Navigation
   const slides = Array.from(document.querySelectorAll('.slide'));
   let currentSlideIndex = 0;
+  const slideCounter = document.getElementById('slideCounter');
+  const typewriterText = document.getElementById('typewriterText');
+  const typewriterCursor = document.getElementById('typewriterCursor');
+  const introLines = [
+    'PUT A DENT',
+    'IN THE UNIVERSE.'
+  ];
+  let typewriterStarted = false;
 
   const navDotsContainer = document.getElementById('navDots');
   if (navDotsContainer) {
@@ -61,6 +239,26 @@ document.addEventListener('DOMContentLoaded', () => {
       if (i === index) dot.classList.add('active');
       else dot.classList.remove('active');
     });
+    if (slideCounter) {
+      slideCounter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+    }
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function runTypewriter() {
+    if (typewriterStarted || !typewriterText) return;
+    typewriterStarted = true;
+    typewriterText.textContent = '';
+    if (typewriterCursor) typewriterCursor.style.display = 'inline-block';
+
+    const fullText = introLines.join('\n');
+    for (const char of fullText) {
+      typewriterText.textContent += char;
+      await sleep(char === '\n' ? 260 : 28);
+    }
   }
 
   // Observers for slide fade-in & active states
@@ -75,6 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('animate-in');
+        if (entry.target.id === 'slide-2') runTypewriter();
         if (!intersectingEntry || entry.intersectionRatio > intersectingEntry.intersectionRatio) {
            intersectingEntry = entry;
         }
@@ -119,22 +318,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 5. Overview Modal
-  const overviewModal = document.createElement('div');
-  overviewModal.className = 'overview';
-  overviewModal.innerHTML = `
-    <div class="overview-header">
-      <div class="overview-title">Showcase Overview</div>
-      <div class="overview-close" onclick="closeOverview()"><i data-lucide="x"></i></div>
-    </div>
-    <div class="overview-grid" id="overview-grid"></div>
-  `;
-  document.body.appendChild(overviewModal);
+  const overviewModal = document.getElementById('overview');
+  const overviewGrid = document.getElementById('overviewGrid');
   
   let overviewBuilt = false;
   
   function buildOverview() {
     if (overviewBuilt) return;
-    const grid = document.getElementById('overview-grid');
+    const grid = overviewGrid;
+    if (!grid) return;
     slides.forEach((slide, i) => {
       const item = document.createElement('div');
       item.className = 'overview-item';
@@ -142,8 +334,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const thumb = document.createElement('img');
       thumb.loading = 'lazy';
       
+      const projectCover = slide.querySelector('.project-card img');
       const cinematicBg = slide.querySelector('.cinematic-bg');
-      if (cinematicBg && cinematicBg.style.backgroundImage) {
+      if (projectCover) {
+        thumb.src = projectCover.src;
+      } else if (cinematicBg && cinematicBg.style.backgroundImage) {
         let bgUrl = cinematicBg.style.backgroundImage;
         bgUrl = bgUrl.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
         thumb.src = bgUrl;
@@ -154,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
       item.appendChild(thumb);
       
       const label = document.createElement('div');
-      label.className = 'overview-item-label';
+      label.className = 'overview-caption';
       label.textContent = slide.dataset.label || `Slide ${i + 1}`;
       item.appendChild(label);
       
@@ -286,6 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (e.key === 'Escape') {
       if (overviewModal.classList.contains('active')) closeOverview();
       if (lightboxOverlay.classList.contains('active')) closeLightbox();
+      if (projectModal.classList.contains('active')) closeProject();
     } else if (e.key.toLowerCase() === 'o') {
       toggleOverview();
     } else if (e.key.toLowerCase() === 'f') {
