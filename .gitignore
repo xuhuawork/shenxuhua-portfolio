@@ -43,3 +43,4 @@ assets/xpc/videos
 
 # Claude Code
 .claude/launch.json
+.vercel

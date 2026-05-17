@@ -2122,6 +2122,7 @@ body {
   height: auto;
   align-items: stretch;
   justify-content: flex-start;
+  overflow: visible;
   background: #050505;
 }
 
@@ -2549,21 +2550,48 @@ body {
 
   .keyboard-hint { display: none; }
 
+  .project-library {
+    min-height: 100dvh;
+    height: auto;
+    overflow: visible;
+    display: block;
+  }
+
   .project-library-shell {
-    padding: 88px 18px 56px;
+    padding: 64px 16px 48px;
+  }
+
+  .library-kicker {
+    font-size: 10px;
+    letter-spacing: 3px;
+    margin-bottom: 14px;
   }
 
   .library-head {
     display: block;
+    margin-bottom: 16px;
+  }
+
+  .library-title {
+    font-size: clamp(42px, 16vw, 64px);
+  }
+
+  .library-subtitle {
+    margin-top: 14px;
+    font-size: 14px;
+    line-height: 1.6;
   }
 
   .library-stats {
-    margin-top: 18px;
+    margin-top: 14px;
+    padding-bottom: 0;
     white-space: normal;
   }
 
   .library-toolbar {
     grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
   }
 
   .library-controls {
@@ -2572,13 +2600,19 @@ body {
   }
 
   .library-filter {
-    min-height: 42px;
+    min-height: 38px;
     padding: 0 12px;
+    font-size: 11px;
   }
 
   .project-grid {
     grid-template-columns: 1fr;
     gap: 14px;
+  }
+
+  .project-card {
+    opacity: 1;
+    transform: none;
   }
 
   .project-card--hero {
